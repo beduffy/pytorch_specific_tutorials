@@ -4,26 +4,42 @@ import torch.autograd as autograd
 from torch.autograd import Variable
 
 
+input_t = torch.Tensor([1, 2, 3, 4, 5])
+target_regression = torch.Tensor([1, 2, 3, 4, 6])
+
+input_classification = torch.Tensor([[1, 2, 3], [1, 2, 3], [1, 2, 3]]).transpose(1, 0)
+target_classification = torch.LongTensor([1, 2, 3, 4, 5]) # torch.LongTensor(3).random_(5)
+
+print(input_t)
+print(input_classification)
+print(target_regression)
+print(target_classification)
+
 # L1Loss AKA absolute loss
 loss = nn.L1Loss()
-input = autograd.Variable(torch.randn(3, 5), requires_grad=True)
-target = autograd.Variable(torch.randn(3, 5))
+input = autograd.Variable(input_t, requires_grad=True)
+target = autograd.Variable(target_regression)
 output = loss(input, target)
 output.backward()
+print('L1Loss: {}'.format(output))
 
 # MSE Loss AKA AKA AKA
 loss = nn.MSELoss()
-input = autograd.Variable(torch.randn(3, 5), requires_grad=True)
-target = autograd.Variable(torch.randn(3, 5))
+input = autograd.Variable(input_t, requires_grad=True)
+target = autograd.Variable(target_regression)
 output = loss(input, target)
 output.backward()
+print('MSELoss: {}'.format(output))
 
 # CrossEntropyLoss
 loss = nn.CrossEntropyLoss()
+#input = autograd.Variable(input_classification, requires_grad=True)
+#target = autograd.Variable(target_classification)
 input = autograd.Variable(torch.randn(3, 5), requires_grad=True)
 target = autograd.Variable(torch.LongTensor(3).random_(5))
 output = loss(input, target)
 output.backward()
+print('CrossEntropyLoss: {}'.format(output))
 
 # NLLLoss
 m = nn.LogSoftmax()
@@ -34,6 +50,7 @@ input = autograd.Variable(torch.randn(3, 5), requires_grad=True)
 target = autograd.Variable(torch.LongTensor([1, 0, 4]))
 output = loss(m(input), target)
 output.backward()
+print('NLLLoss: {}'.format(output))
 
 # PoissonNLLLoss # Negative log likelihood loss with Poisson distribution of target.
 loss = nn.PoissonNLLLoss()
@@ -41,6 +58,7 @@ log_input = autograd.Variable(torch.randn(5, 2), requires_grad=True)
 target = autograd.Variable(torch.randn(5, 2))
 output = loss(log_input, target)
 output.backward()
+print('PoissonNLLLoss: {}'.format(output))
 
 # NLLLoss2d # negative log likehood loss, but for image inputs. It computes NLL loss per-pixel.
 m = nn.Conv2d(16, 32, (3, 3)).float()
@@ -51,6 +69,7 @@ input = autograd.Variable(torch.randn(3, 16, 10, 10))
 target = autograd.Variable(torch.LongTensor(3, 8, 8).random_(0, 4))
 output = loss(m(input), target)
 output.backward()
+print('NLLLoss2d: {}'.format(output))
 
 # KLDivLoss # The Kullback-Leibler divergence Loss
 
@@ -61,6 +80,7 @@ input = autograd.Variable(torch.randn(3), requires_grad=True)
 target = autograd.Variable(torch.FloatTensor(3).random_(2))
 output = loss(m(input), target)
 output.backward()
+print('BCELoss: {}'.format(output))
 
 # BCEWithLogitsLoss # This loss combines a Sigmoid layer and the BCELoss in one single class
 
@@ -85,9 +105,9 @@ loss(x, y) = 1/n {
 # MultiMarginLoss
 
 # TripletMarginLoss
-triplet_loss = nn.TripletMarginLoss(margin=1.0, p=2)
+'''triplet_loss = nn.TripletMarginLoss(margin=1.0, p=2)
 input1 = autograd.Variable(torch.randn(100, 128))
 input2 = autograd.Variable(torch.randn(100, 128))
 input3 = autograd.Variable(torch.randn(100, 128))
 output = triplet_loss(input1, input2, input3)
-output.backward()
+output.backward()'''
